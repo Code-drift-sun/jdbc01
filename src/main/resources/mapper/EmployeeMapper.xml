@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace:命令空间。现在可以随便起名。
+后续需要和dao的名称一致。
+-->
+<mapper namespace="com.aaa.demo2.dao.EmployeeDao">
+
+    <resultMap id="EmployeeMapper" type="Employee" autoMapping="true">
+        <id property="empId" column="emp_id"/>
+        <result property="empName" column="emp_name"/>
+        <result property="hiredate" column="hire_date"/>
+    </resultMap>
+    <!--where+if结合:
+    where: 如果有条件 会自动添加where关键字，并把第一个and或or去除。
+
+    select * from employee where  emp_name=? and dept=?
+    -->
+    <select id="selectByCondition" resultMap="EmployeeMapper">
+        select * from employee
+        <where>
+            <if test="empName!=null and empName!=''">
+                and emp_name = #{empName}
+            </if>
+            <if test="dept!=null and dept!=''">
+                and dept =#{dept}
+            </if>
+        </where>
+    </select>
+
+    <!--where+choose-->
+    <select id="selectByCondition1" resultMap="EmployeeMapper">
+        select * from employee
+        <where>
+            <choose>
+                <when test="empName!=null and empName!=''">
+                    and emp_name = #{empName}
+                </when>
+                <when test="dept!=null and dept!=''">
+                    and dept =#{dept}
+                </when>
+                <otherwise>
+                    and 1=1
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <select id="selectByCondition2" resultMap="EmployeeMapper">
+        select * from employee
+        <trim prefix="where" prefixOverrides="and|or" >
+            <if test="empName!=null and empName!=''">
+                and emp_name = #{empName}
+            </if>
+            <if test="dept!=null and dept!=''">
+                or dept =#{dept}
+            </if>
+        </trim>
+    </select>
+
+    <!--set+if
+set:自动添加set关键字 并且去除最后一个逗号
+-->
+    <update id="update">
+        update employee
+        <set>
+            <if test="empName!=null and empName!=''">
+                emp_name=#{empName},
+            </if>
+            <if test="gender!=null and gender!=''">
+                gender=#{gender},
+            </if>
+            <if test="age!=null">
+                age=#{age},
+            </if>
+            <if test="dept!=null and dept!=''">
+                dept=#{dept},
+            </if>
+            <if test="job!=null and job!=''">
+                job=#{job},
+            </if>
+            <if test="salary!=null">
+                salary=#{salary},
+            </if>
+            <if test="hiredate!=null and hiredate!=''">
+                hire_date=#{hiredate},
+            </if>
+            <if test="phone!=null and phone!=''">
+                phone=#{phone},
+            </if>
+            <if test="email!=null and email!=''">
+                email=#{email},
+            </if>
+        </set>
+        where emp_id=#{empId}
+    </update>
+
+    <!--foreach标签.
+collection:需要遍历的集合类型.list 如果为数组array
+item:集合中元素的别名
+separator:分隔符
+open:开始符
+close:结束符
+delete from employee where id in(1,6,9)
+-->
+    <delete id="batchDelete">
+        delete from employee where emp_id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="batchAdd">
+        INSERT INTO employee (emp_name,gender,age,dept,job,salary,hire_date,phone,email) VALUES
+        <foreach collection="emps" item="emp" separator=",">
+            (#{emp.empName},#{emp.gender},#{emp.age},#{emp.dept},#{emp.job},#{emp.salary},#{emp.hiredate},#{emp.phone},#{emp.email})
+        </foreach>
+    </insert>
+</mapper>

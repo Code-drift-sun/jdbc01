@@ -116,4 +116,31 @@ delete from employee where id in(1,6,9)
             (#{emp.empName},#{emp.gender},#{emp.age},#{emp.dept},#{emp.job},#{emp.salary},#{emp.hiredate},#{emp.phone},#{emp.email})
         </foreach>
     </insert>
+
+    <select id="selectByName" resultMap="EmployeeMapper">
+        select * from employee where emp_name = #{empName} and age=#{age}
+    </select>
+
+    <!--只能使用${}指定排序列名-->
+    <select id="selectByName1" resultMap="EmployeeMapper">
+        select * from employee order by ${empId}
+    </select>
+
+    <!--传递多个参数 mybatis会自动为每个参数起的名称param1 param2 ......
+        使用@Param可以为参数指定名称。
+  -->
+    <select id="selectAge" resultMap="EmployeeMapper">
+        select * from employee where age between #{param1} and #{param2}
+    </select>
+
+    <select id="selectByLikeName" resultMap="EmployeeMapper">
+        select * from employee where emp_name like concat('%',#{name},'%')
+    </select>
+
+    <!--分页查询-->
+    <select id="selectPage" resultMap="EmployeeMapper">
+        select * from employee
+    </select>
+
+
 </mapper>

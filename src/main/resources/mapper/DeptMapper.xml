@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace:命令空间。现在可以随便起名。
+后续需要和dao的名称一致。
+-->
+<mapper namespace="com.aaa.demo2.dao.DeptDao">
+
+    <!--列名和属于名之间的映射：-->
+    <resultMap id="DeptMapper" type="Dept">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <!--association: 一对一或多对一的映射关系
+        property: 表示对应对象的属性名
+        javaType: 表示对象的类型
+        -->
+    </resultMap>
+
+    <select id="queryById" parameterType="int" resultMap="DeptMapper">
+        SELECT * FROM dept WHERE id = #{id}
+    </select>
+    <select id="getAll" resultMap="DeptMapper">
+        SELECT * FROM dept
+    </select>
+    <insert id="insert" >
+        INSERT INTO dept (name) VALUES (#{name})
+    </insert>
+    <update id="update" >
+        UPDATE dept SET name = #{name} WHERE id = #{id}
+    </update>
+    <delete id="delete">
+        DELETE FROM dept WHERE id = #{id}
+    </delete>
+
+</mapper>

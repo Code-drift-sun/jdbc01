@@ -5,6 +5,11 @@
 后续需要和dao的名称一致。
 -->
 <mapper namespace="com.aaa.demo2.dao.EmployeeDao">
+    <cache
+            eviction="FIFO"
+            flushInterval="60000"
+            size="512"
+            readOnly="true"/>
 
     <resultMap id="EmployeeMapper" type="Employee" autoMapping="true">
         <id property="empId" column="emp_id"/>
@@ -142,5 +147,9 @@ delete from employee where id in(1,6,9)
         select * from employee
     </select>
 
+    <!--根据empId查询员工信息-->
+    <select id="selectById" resultMap="EmployeeMapper">
+        select * from employee where emp_id=#{empId}
+    </select>
 
 </mapper>

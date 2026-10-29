@@ -91,6 +91,43 @@ public class DeptTest {
         sqlSession2.close();
     }
 
+    @Test
+    public void test2() throws Exception {
+        //1.读取配置文件---解析配置文件. mybatis知道连接的数据库和账号密码。 知道映射文件中内。
+        Reader reader = Resources.getResourceAsReader("config.xml");
+        //2.获取SqlSessionFactory对象
+        SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(reader);
+        //1. 获取SqlSession对象----理解为: Connection对象。类中包含对表的各种操作方法。
+        SqlSession session = sessionFactory.openSession();
+        System.out.println("第一次查询数据库 id=2的数据内容----执行sql语句。");
+        EmployeeDao mapper1 = session.getMapper(EmployeeDao.class);
+        Employee employee1 = mapper1.selectById(2);
+        System.out.println(employee1);
+
+        System.out.println("第二次查询数据库，id=2的数据内容----没有执行sql语句。");
+        EmployeeDao mapper2 = session.getMapper(EmployeeDao.class);
+        Employee employee2 = mapper2.selectById(2);
+        System.out.println(employee2);
+
+        session.close();//关闭session 一级缓存就失效了
+        SqlSession session2 = sessionFactory.openSession();
+        System.out.println("第三次查询数据库，id=2的数据内容----没有执行sql---从二级缓存获取。");
+        EmployeeDao mapper3 = session2.getMapper(EmployeeDao.class);
+        Employee employee3 = mapper3.selectById(2);
+        System.out.println(employee3);
+
+
+        System.out.println("第四次查询数据库，id=2的数据内容----没有执行sql---从二级缓存。");
+        EmployeeDao mapper4 = session2.getMapper(EmployeeDao.class);
+        Employee employee4 = mapper4.selectById(2);
+        System.out.println(employee4);
+
+        System.out.println("第五次查询数据库，id=2的数据内容----没有执行sql---从二级缓存。");
+        EmployeeDao mapper5 = session2.getMapper(EmployeeDao.class);
+        Employee employee5 = mapper5.selectById(2);
+        System.out.println(employee5);
+
+    }
 
 
 }

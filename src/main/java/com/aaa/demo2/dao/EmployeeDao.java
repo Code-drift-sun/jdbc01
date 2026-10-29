@@ -25,5 +25,7 @@ public interface EmployeeDao {
 
     public List<Employee> selectPage();
 
+    public Employee selectById(Integer empId);
+
 
 }
